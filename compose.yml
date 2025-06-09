@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  backend:
+    build: .
+    container_name: rag_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+  db:
+    image: postgres:15
+    container_name: rag_db
+    restart: always
+    environment:
+      POSTGRES_USER: newuser
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ragdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "newuser", "-d", "ragdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:

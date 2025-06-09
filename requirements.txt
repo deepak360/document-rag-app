@@ -1,0 +1,15 @@
+fastapi
+uvicorn[standard]
+langchain
+llama-index
+psycopg[binary]
+SQLAlchemy
+asyncpg
+python-dotenv
+scikit-learn
+pydantic
+httpx
+pytest
+pytest-cov
+alembic
+pytest-asyncio
