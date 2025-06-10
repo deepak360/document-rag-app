@@ -15,7 +15,7 @@ A production-ready backend application for document ingestion and retrieval-augm
 ```
 User ─► FastAPI ─► DocumentIngestionAPI
                      │
-                     ├──► Langchain (OpenAI/HF) Embedding
+                     ├──► Langchain (OpenAI/HF/TfidfVectorizer) Embedding
                      ├──► PostgreSQL Embedding Storage
                      └──► QA API ─► Retriever ─► Answer via RAG
 ```
@@ -66,16 +66,15 @@ $ pytest --cov=app
 
 ## CI/CD
 - GitHub Actions (`.github/workflows/ci.yml`)
-- Runs tests and builds on each PR
+- Runs tests and builds on each PR (This needs to be done)
 
 ## LLM Integration
 - Using Langchain interface
-- Plug in OpenAI or Hugging Face easily via environment/config
+- Plug in TfidfVectorizer (OpenAI or Hugging Face) easily via environment/config
 
 ## Environment Variables (`.env`)
 ```
 DATABASE_URL=postgresql+asyncpg://user:pass@db/ragdb
-OPENAI_API_KEY=your_openai_key
 ```
 
 ##  Alembic
