@@ -2,7 +2,7 @@ fastapi
 uvicorn[standard]
 langchain
 llama-index
-psycopg[binary]
+psycopg2-binary
 SQLAlchemy
 asyncpg
 python-dotenv
