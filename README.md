@@ -35,6 +35,8 @@ $ source env/bin/activate
 # Install dependencies
 $ pip3 install -r requirements.txt
 
+# Change .env.local to .env
+
 # Run app
 $ uvicorn app.main:app --reload
 ```

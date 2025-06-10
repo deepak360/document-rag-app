@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 env:
-  DATABASE_URL: postgresql+asyncpg://testuser:testpass@postgres:5432/testdb
+  DATABASE_URL: postgresql+asyncpg://testuser:testpass@backend:5432/testdb
 
 jobs:
   test:
