@@ -1,6 +1,28 @@
-version: '3.9'
-
 services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: /bin/sh -c "ollama serve & sleep 2 && ollama pull mistral & wait"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:11434 || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 30
+      start_period: 60s
+    networks:
+      - ragnet
+    # Uncomment if using GPU
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           capabilities: [gpu]
+
   backend:
     build: .
     container_name: rag_backend
@@ -12,6 +34,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      ollama:
+        condition: service_started
     ports:
       - "8000:8000"
     healthcheck:
@@ -19,9 +43,11 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - ragnet
 
   db:
-    image: postgres:15
+    image: ankane/pgvector:latest
     container_name: rag_db
     restart: always
     environment:
@@ -37,6 +63,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - ragnet
 
 volumes:
   pgdata:
+  ollama_data:
+
+networks:
+  ragnet:

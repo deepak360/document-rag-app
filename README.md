@@ -83,3 +83,14 @@ alembic revision --autogenerate -m "Initial migration"
 alembic upgrade head
 alembic revision --autogenerate -m "Initial migration"
 ```
+
+```
+docker exec -it 3c91d5d56064 psql -U newuser ragdb
+```
+
+```
+export DOCKER_HOST=unix:///var/run/docker.sock
+```
+```
+ sudo service postgresql stop
+ ```

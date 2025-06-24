@@ -1,22 +1,22 @@
 from fastapi import FastAPI
-from app.routes import ingest, qa, select
-from app.database import create_tables, SessionLocal, engine
-
-import pickle
+from app.core.config import settings
+from app.db.sql import create_tables, SessionLocal, engine
 from sklearn.feature_extraction.text import TfidfVectorizer
 from app.models.document import Document
-from sqlalchemy import select as SELECT
-import asyncio
+from sqlalchemy import select as SELECT, text
 from sqlalchemy.exc import OperationalError
 from contextlib import asynccontextmanager
-
+from fastapi.middleware.cors import CORSMiddleware
+from app.routes import router as api_router
+import asyncio
+import pickle
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
     await wait_for_db(engine)
     await create_tables()
-    await train_and_save_vocab()
+    # await train_and_save_vocab()
     yield
     # Optional: add shutdown logic here
 
@@ -29,12 +29,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include route modules
-#This url save data and their embeddings to DB
-app.include_router(ingest.router, prefix="/ingest", tags=["Document Ingestion"])
-#This url is for Ques-Ans we pass Ques and get Ans.
-app.include_router(qa.router, prefix="/qa", tags=["Q&A"])
-app.include_router(select.router, prefix="/select-documents", tags=["Document Selection"])
+app.include_router(api_router, prefix=settings.API_PREFIX)
 
 @app.get("/")
 def health_check():
@@ -42,7 +46,7 @@ def health_check():
 
 async def train_and_save_vocab():
     async with SessionLocal() as session:
-        result = await session.execute(SELECT(Document.content))
+        result = await session.execute(SELECT(Document.chunks))
         contents = result.scalars().all()
     
     if contents:
@@ -56,6 +60,8 @@ async def wait_for_db(engine, retries=5, delay=2):
     for i in range(retries):
         try:
             async with engine.begin() as conn:
+                await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+                print("Database is ready.")
                 return
         except OperationalError as e:
             print(f"Database not ready yet. Retrying ({i+1}/{retries})...")
