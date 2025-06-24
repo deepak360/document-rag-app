@@ -4,7 +4,8 @@ A production-ready backend application for document ingestion and retrieval-augm
 
 ## Features
 - FastAPI async backend
-- Document ingestion with embeddings
+- User Authentication & Signup APIs
+- Document upload & text extraction
 - Retrieval-Augmented Generation Q&A
 - PostgreSQL + SQLAlchemy async
 - LLM support: Langchain / OpenAI / HuggingFace
@@ -15,8 +16,8 @@ A production-ready backend application for document ingestion and retrieval-augm
 ```
 User ─► FastAPI ─► DocumentIngestionAPI
                      │
-                     ├──► Langchain (OpenAI/HF/TfidfVectorizer) Embedding
-                     ├──► PostgreSQL Embedding Storage
+                     ├──► Langchain (OpenAI/HF/TfidfVectorizer/ollama) Embedding
+                     ├──► PostgreSQL Embedding Storage (pgvector)
                      └──► QA API ─► Retriever ─► Answer via RAG
 ```
 
@@ -70,7 +71,7 @@ $ pytest --cov=app
 
 ## LLM Integration
 - Using Langchain interface
-- Plug in TfidfVectorizer (OpenAI or Hugging Face) easily via environment/config
+- Plug in ollama/TfidfVectorizer (OpenAI or Hugging Face) easily via environment/config
 
 ## Environment Variables (`.env`)
 ```
@@ -84,13 +85,16 @@ alembic upgrade head
 alembic revision --autogenerate -m "Initial migration"
 ```
 
+## open postgres shell inside docker
 ```
 docker exec -it 3c91d5d56064 psql -U newuser ragdb
 ```
 
+## For localhost specific error
 ```
 export DOCKER_HOST=unix:///var/run/docker.sock
 ```
+##  Error when port bind on localhost
 ```
  sudo service postgresql stop
  ```
