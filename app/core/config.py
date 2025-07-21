@@ -9,7 +9,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     # FastAPI settings
-    PROJECT_NAME: str = "FastAPI TheSquare"
+    PROJECT_NAME: str = "FastAPI Document"
     API_PREFIX: str = "/api/v1"
     DEBUG_MODE: bool = True
     FUTURE: bool = True

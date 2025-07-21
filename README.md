@@ -20,6 +20,13 @@ User ─► FastAPI ─► DocumentIngestionAPI
                      ├──► PostgreSQL Embedding Storage (pgvector)
                      └──► QA API ─► Retriever ─► Answer via RAG
 ```
+```
+🔁 How does this RAG flow work?
+    Chunk + Embed documents with BGE model → store in DB.(HuggingFace)
+    Query: User asks a question → embed question with same model.
+    Search: Use cosine similarity to find top-k relevant chunks.
+    Generate: Send those chunks + question to Mistral (Ollama) to get an answer.
+```
 
 ## Setup Instructions
 
@@ -98,3 +105,15 @@ export DOCKER_HOST=unix:///var/run/docker.sock
 ```
  sudo service postgresql stop
  ```
+
+## Demo User Login
+```
+Demo User
+demo@example.com
+password
+```
+```
+Super Demo User
+superdemo@example.com
+password
+```

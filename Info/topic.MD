@@ -31,3 +31,19 @@
 ```
 SentenceTransformer("BAAI/bge-small-en-v1.5")
 ```
+
+⚙️ What is Cosine Similarity?
+Cosine similarity measures the angle between two vectors, giving a value between:
+    +1: very similar (pointing in same direction)
+    0: unrelated
+    -1: opposite (pointing in opposite directions)
+
+🧠 Where Do These Numbers Come From?
+
+Internally:
+
+    The model is a Transformer, trained on millions of sentences.
+
+    It learns to compress the semantic meaning of a sentence into a compact vector using attention layers.
+
+    It’s fine-tuned so that similar sentences result in vectors that are close in cosine similarity.
